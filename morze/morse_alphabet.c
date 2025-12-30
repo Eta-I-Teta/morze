@@ -13,11 +13,13 @@
 //}
 
 char* read_morse_letter() {
-    char word[15];
+    char* letter = malloc(7 * sizeof(char));
+    assert(letter != NULL);
+
     char symbol;
     int index = 0;
 
-    word[0] = '\0';
+    letter[0] = '\0';
 
     int idle_time = 0;
 
@@ -34,15 +36,14 @@ char* read_morse_letter() {
             else if (held < DOT_THRESHOLD) symbol = '.';
             else symbol = '-';
 
-            word[index++] = symbol;
+            letter[index++] = symbol;
+            letter[index] = '\0';
+
             idle_time = 0;
         }
 
         // return
-        else if (idle_time > 2500) {
-            word[index] = '\0';
-            return word;
-        }
+        else if ((idle_time > LETTER_THRESHOLD) || (index >= 7)) return letter;
 
         else idle_time += 10;
 

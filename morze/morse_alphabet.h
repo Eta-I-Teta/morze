@@ -1,6 +1,7 @@
 #pragma once
 
 #define DOT_THRESHOLD 300  // ms
+#define LETTER_THRESHOLD 1000  // ms
 
 //typedef struct {
 //    char letter;
