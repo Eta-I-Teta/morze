@@ -2,14 +2,15 @@
 #include <locale.h>
 #include <string.h>
 #include <windows.h>
+ 
+ #include <SDL.h>
 
 #include "morse_alphabet.h"
 
 int main(void) {
 	char* locale = setlocale(LC_ALL, "");
 	
-    char* word = read_morse_letter();
-    printf("%4s", word);
+    
 
 	return 0;
 }
