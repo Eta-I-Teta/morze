@@ -21,9 +21,15 @@
     <ClCompile Include="morse_alphabet.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="GUI.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="morse_alphabet.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

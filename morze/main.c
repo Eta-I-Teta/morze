@@ -1,26 +1,29 @@
-#include <stdio.h>
+п»ї#include <stdio.h>
 #include <locale.h>
 #include <string.h>
 #include <windows.h>
  
 #include <SDL.h>
+#include <SDL_ttf.h>
 
+#include "GUI.h"
 #include "morse_alphabet.h"
 
 int main(void) {
 	char* locale = setlocale(LC_ALL, "");
 
-	// Обработка ошибки инициализации SDL
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ SDL2, SDL_ttf
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		printf("Выполнение программы невозможно: Библиотека SDL не инициализирована");
+		printf("Р’С‹РїРѕР»РЅРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹ РЅРµРІРѕР·РјРѕР¶РЅРѕ: Р‘РёР±Р»РёРѕС‚РµРєР° SDL 2 РЅРµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅР°");
 		return 1;
 	}
+    TTF_Init();
 	
-	// Создание окна и рендера
+	// РЎРѕР·РґР°РЅРёРµ РѕРєРЅР° Рё СЂРµРЅРґРµСЂР°
 
 	SDL_Window* window = SDL_CreateWindow(
-		"Учебник Морзе",
+		"the Morse simulator",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		800, 600, 
 		SDL_WINDOW_SHOWN
@@ -30,14 +33,24 @@ int main(void) {
 		window, -1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
 	);
+
+    // РЁСЂРёС„С‚
+
+    TTF_Font* font = TTF_OpenFont("fonts/RenaultLife.ttf", 24);
+    if (!font) {
+        printf("Р’С‹РїРѕР»РЅРµРЅРёРµ РїСЂРѕРіСЂР°РјРјС‹ РЅРµРІРѕР·РјРѕР¶РЅРѕ: РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С€СЂРёС„С‚Р°");
+        return 1;
+    }
 	
-	// Основной цикл
+	// РћСЃРЅРѕРІРЅРѕР№ С†РёРєР»
 
 	int running = 1;
 	SDL_Event event;
 
     while(running){
-        // Обработка событий
+
+        // РћР±СЂР°Р±РѕС‚РєР° СЃРѕР±С‹С‚РёР№
+
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = 0;
@@ -49,25 +62,30 @@ int main(void) {
             }
         }
 
-        // Очистка экрана (фон)
-        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255); // тёмно-серый
+        // РћС‡РёСЃС‚РєР° СЌРєСЂР°РЅР°
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        // === СЮДА БУДЕТ ТВОЯ ГРАФИКА ===
+        // Р“СЂР°С„РёРєР°
 
-        // Пример: красный прямоугольник
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_Rect rect = { 100, 100, 200, 100 };
-        SDL_RenderFillRect(renderer, &rect);
+        const char* texxt = "Hello, world!?";
+        draw_text(renderer, font, texxt, 10, 10, 255, 255, 255);
 
-        // Показать кадр
+        // РџРѕРєР°Р·Р°С‚СЊ РєР°РґСЂ
+
         SDL_RenderPresent(renderer);
+        SDL_Delay(16);
     }
 
-    // Освобождение ресурсов
+    // РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ СЂРµСЃСѓСЂСЃРѕРІ
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+
+    TTF_CloseFont(font);
+    TTF_Quit();
+
     return 0;
 }
