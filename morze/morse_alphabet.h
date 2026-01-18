@@ -1,52 +1,26 @@
-#pragma once
+ï»¿#pragma once
 
 #define DOT_THRESHOLD 300  // ms
 #define LETTER_THRESHOLD 1000  // ms
 
-//typedef struct {
-//    char letter;
-//    char* code;
-//} LettersPair;
-//
-//const LettersPair EN_primer[] = {
-//    {'A', ".-"},     {'B', "-..."},   {'C', "-.-."},   {'D', "-.."},
-//    {'E', "."},      {'F', "..-."},   {'G', "--."},    {'H', "...."},
-//    {'I', ".."},     {'J', ".---"},   {'K', "-.-"},    {'L', ".-.."},
-//    {'M', "--"},     {'N', "-."},     {'O', "---"},    {'P', ".--."},
-//    {'Q', "--.-"},   {'R', ".-."},    {'S', "..."},    {'T', "-"},
-//    {'U', "..-"},    {'V', "...-"},   {'W', ".--"},    {'X', "-..-"},
-//    {'Y', "-.--"},   {'Z', "--.."}
-//};
-//const int EN_primer_lenght = 26;
-//
-//const LettersPair RU_primer[] = {
-//    {'À', ".-"},     {'Á', "-..."},   {'Â', ".--"},    {'Ã', "--."},
-//    {'Ä', "-.."},    {'Å', "."},      {'¨', ".-..-."}, {'Æ', "...-"},
-//    {'Ç', "--.."},   {'È', ".."},     {'É', ".---"},   {'Ê', "-.-"},
-//    {'Ë', ".-.."},   {'Ì', "--"},     {'Í', "-."},     {'Î', "---"},
-//    {'Ï', ".--."},   {'Ð', ".-."},    {'Ñ', "..."},    {'Ò', "-"},
-//    {'Ó', "..-"},    {'Ô', "..-."},   {'Õ', "...."},   {'Ö', "-.-."},
-//    {'×', "---."},   {'Ø', "----"},   {'Ù', "--.-"},   {'Ú', "--.--"},
-//    {'Û', "-.--"},   {'Ü', "..-.."},  {'Ý', "..-.."},  {'Þ', "..--"},
-//    {'ß', ".-.-"}
-//};
-//const int RU_primer_lenght = 33;
-//
-//const LettersPair DIGIT_primer[] = {
-//    {'0', "-----"},  {'1', ".----"},  {'2', "..---"},  {'3', "...--"},
-//    {'4', "....-"},  {'5', "....."},  {'6', "-...."},  {'7', "--..."},
-//    {'8', "---.."},  {'9', "----."}
-//};
-//const int DIGIT_primer_lenght = 10;
-//
-//const LettersPair PUNCTUATION_primer[] = {
-//    {'.', ".-.-.-"}, {',', "--..--"}, {'?', "..--.."}, {'!', "-.-.--"},
-//    {'(', "-.--."},  {')', "-.--.-"}, {':', "---..."}, {'-', "-....-"},
-//    {'"', ".-..-."}
-//};
-//const int PUNCTUATION_primer_lenght = 9;
+typedef struct {
+    char* letter;
+    char* code;
+} LettersPair;
+
+extern const LettersPair EN_primer[];
+extern const int EN_primer_lenght;
+
+extern const LettersPair RU_primer[];
+extern const int RU_primer_lenght;
+
+extern const LettersPair DIGIT_primer[];
+extern const int DIGIT_primer_lenght;
+
+extern const LettersPair PUNCTUATION_primer[];
+extern const int PUNCTUATION_primer_lenght;
 
 
 //char* code_to_letters(char* code);
 
-char* read_morse_letter();
+//char* read_morse_letter();
