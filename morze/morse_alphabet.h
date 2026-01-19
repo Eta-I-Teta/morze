@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#define DOT_THRESHOLD 300  // ms
-#define LETTER_THRESHOLD 1000  // ms
+#define DOT_THRESHOLD 150
 
 typedef struct {
     char* letter;
@@ -28,3 +27,9 @@ typedef struct {
 } PrimerStatus;
 
 extern PrimerStatus primer_status;
+
+/*
+Возвращает случайную пару "символ – код Морзе", выбирая из доступных наборов
+Выбор осуществляется только среди тех наборов, которые включены в primer_status
+*/
+LettersPair get_random_pair();

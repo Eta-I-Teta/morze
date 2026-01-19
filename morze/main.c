@@ -6,6 +6,7 @@
 #include <locale.h>
 #include <string.h>
 #include <windows.h>
+#include <time.h>
  
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -16,13 +17,15 @@
 int main(void) {
 	char* locale = setlocale(LC_ALL, "");
 
-	// Инициализация SDL2, SDL_ttf
+	// Инициализация SDL2, SDL_ttf, time
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		printf("Выполнение программы невозможно: Библиотека SDL 2 не инициализирована");
 		return 1;
 	}
 	TTF_Init();
+
+	srand((unsigned int)time(NULL));
 	
 	// Создание окна и рендера
 	
@@ -45,12 +48,19 @@ int main(void) {
 
 	// Шрифт
 
-	const int font_size = 24;
-	int line_spacing = 5;
+	const int line_spacing = 5;
 
+	const int font_size = 24;
 	TTF_Font* font = TTF_OpenFont("fonts/RenaultLife.ttf", font_size);
 	if (!font) {
-		printf("Выполнение программы невозможно: Ошибка загрузки шрифта");
+		printf("Выполнение программы невозможно: Ошибка загрузки шрифта (font)");
+		return 1;
+	}
+
+	const int giant_font_size = 120;
+	TTF_Font* giant_font = TTF_OpenFont("fonts/RenaultLife.ttf", giant_font_size);
+	if (!font) {
+		printf("Выполнение программы невозможно: Ошибка загрузки шрифта (giant_font)");
 		return 1;
 	}
 
@@ -60,6 +70,20 @@ int main(void) {
 	
 	int scroll_offset = 0;
 	int max_scroll_offset = 0;
+
+	int training_stage = 0;
+
+	int pair_to_learn_count = 3;
+	LettersPair pair_to_learn[3];
+
+	char input_code[17];
+	input_code[16] = '\0';
+	int input_index = 0;
+	const int input_code_lenght = 16;
+
+	int is_space_held = 0;
+	int held_start;
+	int held;
 
 	// Основной цикл
 	
@@ -71,9 +95,14 @@ int main(void) {
 		// Обработка событий
 
 		while (SDL_PollEvent(&event)) {
+			
+			// Событие закрытия
+
 			if (event.type == SDL_QUIT) {
 				running = 0;
 			}
+
+			// Событие прокрутки
 
 			if (event.type == SDL_MOUSEWHEEL) {
 				if (event.wheel.y > 0) {
@@ -86,25 +115,40 @@ int main(void) {
 				}
 			}
 
+			// События нажатия
+
 			if (event.type == SDL_KEYDOWN) {
 				
 				// Глобальные функции нажатия клавиш
 				
-				if ((event.key.keysym.sym == SDLK_RETURN) || (event.key.keysym.sym == SDLK_KP_ENTER)) {
-					if (scene == "Начальный экран") scene = "Выбор режима";
+				if ((event.key.keysym.sym == SDLK_SPACE) && (!is_space_held)) {
+					held_start = SDL_GetTicks();
+					is_space_held = 1;
 				}
 
 				// Локальные функции нажатия клавиш
+
+				if ((scene == "Начальный экран") && 
+					((event.key.keysym.sym == SDLK_RETURN) || (event.key.keysym.sym == SDLK_KP_ENTER))) scene = "Выбор режима";
 
 				if (scene == "Выбор режима") {
 					if (event.key.keysym.sym == SDLK_ESCAPE) running = 0;
 
 					if ((event.key.keysym.sym == SDLK_1) || (event.key.keysym.sym == SDLK_KP_1)) {
 						scene = "Азбука Морзе";
+
 						scroll_offset = 0;
 						max_scroll_offset = 400;
 					}
-					if ((event.key.keysym.sym == SDLK_2) || (event.key.keysym.sym == SDLK_KP_2)) scene = "Изучение";
+					if ((event.key.keysym.sym == SDLK_2) || (event.key.keysym.sym == SDLK_KP_2)) {
+						scene = "Изучение";
+
+						training_stage = 0;
+						for (int i = 0; i < pair_to_learn_count; i++) pair_to_learn[i] = get_random_pair();
+
+						input_index = 0;
+						for (int i = 0; i < input_code_lenght; i++) input_code[i] = '\0';
+					}
 
 					if ((event.key.keysym.sym == SDLK_0) || (event.key.keysym.sym == SDLK_KP_0)) scene = "Выбор букварей";
 				}
@@ -114,6 +158,7 @@ int main(void) {
 					scroll_offset = 0;
 					max_scroll_offset = 0;
 				}
+				if ((scene == "Изучение") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Выбор режима";
 
 				if (scene == "Выбор букварей") {
 					if (event.key.keysym.sym == SDLK_ESCAPE) scene = "Выбор режима";
@@ -137,6 +182,28 @@ int main(void) {
 				}
 
 			}
+
+			// События отжатия
+
+			if ((event.type == SDL_KEYUP) && (event.key.keysym.sym == SDLK_SPACE)) {
+				is_space_held = 0;
+				held = SDL_GetTicks() - held_start;
+
+				if (input_index >= input_code_lenght) {
+					input_index = 0;
+					for (int i = 0; i < input_code_lenght; i++) input_code[i] = '\0';
+				}
+
+				if (held < DOT_THRESHOLD) {
+					input_code[input_index] = '.';
+					input_index++;
+				}
+				else {
+					input_code[input_index] = '-';
+					input_index++;
+				}
+			}
+
 		}
 
 		// Очистка экрана
@@ -332,9 +399,63 @@ int main(void) {
 
 				draw_y_pos += line_spacing + font_size;
 			}
+
+			// Разделительные полосы
+
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			
+			SDL_RenderDrawLine(
+				renderer,
+				window_width / 3, 0,
+				window_width / 3, window_height
+			);
+			SDL_RenderDrawLine(
+				renderer,
+				window_width * 2 / 3, 0,
+				window_width * 2 / 3, window_height
+			);
+
 		}
 		else if (scene == "Изучение") {
+			draw_text_line(
+				renderer,
+				giant_font,
+				pair_to_learn[training_stage].letter,
+				window_width / 2, window_height / 2,
+				255, 255, 255,
+				1, 1
+			);
+			draw_text_line(
+				renderer,
+				giant_font,
+				pair_to_learn[training_stage].code,
+				window_width / 2, window_height / 2 - giant_font_size,
+				255, 255, 255,
+				1, 1
+			);
 
+			draw_text_line(
+				renderer,
+				giant_font,
+				input_code,
+				window_width / 2, window_height / 2 + giant_font_size,
+				50, 200, 200,
+				1, 1
+			);
+
+			int code_is_correct = 1;
+			for (int i = 0; i < strlen(pair_to_learn[training_stage].code); i++) {
+				if (input_code[i] != pair_to_learn[training_stage].code[i]) {
+					code_is_correct = 0;
+					break;
+				}
+			}
+			if (code_is_correct) {
+				input_index = 0;
+				for (int i = 0; i < input_code_lenght; i++) input_code[i] = '\0';
+				
+				training_stage++;
+			}
 		}
 
 		else if (scene == "Выбор букварей") {
