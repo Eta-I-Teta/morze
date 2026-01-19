@@ -5,6 +5,10 @@
 
 #include "morse_alphabet.h"
 
+#if _MSC_VER
+#pragma execution_character_set("utf-8")
+#endif
+
 const LettersPair EN_primer[] = {
     {"A", ".-"},     {"B", "-..."},   {"C", "-.-."},   {"D", "-.."},
     {"E", "."},      {"F", "..-."},   {"G", "--."},    {"H", "...."},
@@ -39,52 +43,8 @@ const int DIGIT_primer_lenght = sizeof(DIGIT_primer) / sizeof(DIGIT_primer[0]);
 const LettersPair PUNCTUATION_primer[] = {
     {".", ".-.-.-"}, {",", "--..--"}, {"?", "..--.."}, {"!", "-.-.--"},
     {"(", "-.--."},  {")", "-.--.-"}, {":", "---..."}, {"-", "-....-"},
-    {"'", ".-..-."}
+    {"\"", ".-..-."}
 };
 const int PUNCTUATION_primer_lenght = sizeof(PUNCTUATION_primer) / sizeof(PUNCTUATION_primer[0]);
 
-//char* code_to_letters(char* code) {
-//    char* str = malloc(100 * sizeof(char));
-//    assert(str != NULL);
-//
-//
-//}
-
-//char* read_morse_letter() {
-//    char* letter = malloc(7 * sizeof(char));
-//    assert(letter != NULL);
-//
-//    char symbol;
-//    int index = 0;
-//
-//    letter[0] = '\0';
-//
-//    int idle_time = 0;
-//
-//    while (1) {
-//        // Space
-//        if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-//            DWORD start = GetTickCount64();
-//
-//            while (GetAsyncKeyState(VK_SPACE) & 0x8000) Sleep(10);
-//
-//            DWORD held = GetTickCount64() - start;
-//
-//            if (held < 10) continue;
-//            else if (held < DOT_THRESHOLD) symbol = '.';
-//            else symbol = '-';
-//
-//            letter[index++] = symbol;
-//            letter[index] = '\0';
-//
-//            idle_time = 0;
-//        }
-//
-//        // return
-//        else if ((idle_time > LETTER_THRESHOLD) || (index >= 7)) return letter;
-//
-//        else idle_time += 10;
-//
-//        Sleep(10);
-//    }
-//}
+PrimerStatus primer_status = { 0, 1, 0, 0 };

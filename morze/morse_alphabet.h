@@ -20,7 +20,11 @@ extern const int DIGIT_primer_lenght;
 extern const LettersPair PUNCTUATION_primer[];
 extern const int PUNCTUATION_primer_lenght;
 
+typedef struct {
+    int EN;
+    int RU;
+    int DIGIT;
+    int PUNCTUATION;
+} PrimerStatus;
 
-//char* code_to_letters(char* code);
-
-//char* read_morse_letter();
+extern PrimerStatus primer_status;

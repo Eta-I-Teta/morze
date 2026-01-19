@@ -45,7 +45,7 @@ int main(void) {
 
 	// Шрифт
 
-	int font_size = 24;
+	const int font_size = 24;
 	int line_spacing = 5;
 
 	TTF_Font* font = TTF_OpenFont("fonts/RenaultLife.ttf", font_size);
@@ -77,11 +77,11 @@ int main(void) {
 
 			if (event.type == SDL_MOUSEWHEEL) {
 				if (event.wheel.y > 0) {
-					scroll_offset -= 25;
+					scroll_offset -= 35;
 					if (scroll_offset < 0) scroll_offset = 0;
 				}
 				else if (event.wheel.y < 0) {
-					scroll_offset += 25;
+					scroll_offset += 35;
 					if (scroll_offset > max_scroll_offset) scroll_offset = max_scroll_offset;
 				}
 			}
@@ -90,24 +90,52 @@ int main(void) {
 				
 				// Глобальные функции нажатия клавиш
 				
-				if (event.key.keysym.sym == SDLK_RETURN) {
+				if ((event.key.keysym.sym == SDLK_RETURN) || (event.key.keysym.sym == SDLK_KP_ENTER)) {
 					if (scene == "Начальный экран") scene = "Выбор режима";
 				}
 
 				// Локальные функции нажатия клавиш
 
 				if (scene == "Выбор режима") {
+					if (event.key.keysym.sym == SDLK_ESCAPE) running = 0;
+
 					if ((event.key.keysym.sym == SDLK_1) || (event.key.keysym.sym == SDLK_KP_1)) {
 						scene = "Азбука Морзе";
 						scroll_offset = 0;
 						max_scroll_offset = 400;
 					}
+					if ((event.key.keysym.sym == SDLK_2) || (event.key.keysym.sym == SDLK_KP_2)) scene = "Изучение";
+
+					if ((event.key.keysym.sym == SDLK_0) || (event.key.keysym.sym == SDLK_KP_0)) scene = "Выбор букварей";
 				}
+
 				if ((scene == "Азбука Морзе") && (event.key.keysym.sym == SDLK_ESCAPE)) {
 					scene = "Выбор режима";
 					scroll_offset = 0;
 					max_scroll_offset = 0;
 				}
+
+				if (scene == "Выбор букварей") {
+					if (event.key.keysym.sym == SDLK_ESCAPE) scene = "Выбор режима";
+
+					if (
+						(event.key.keysym.sym == SDLK_e) && 
+						(!primer_status.EN || primer_status.RU || primer_status.DIGIT || primer_status.PUNCTUATION)
+					) primer_status.EN = !primer_status.EN;
+					if (
+						(event.key.keysym.sym == SDLK_r) &&
+						(primer_status.EN || !primer_status.RU || primer_status.DIGIT || primer_status.PUNCTUATION)
+						) primer_status.RU = !primer_status.RU;
+					if (
+						(event.key.keysym.sym == SDLK_d) &&
+						(primer_status.EN || primer_status.RU || !primer_status.DIGIT || primer_status.PUNCTUATION)
+						) primer_status.DIGIT = !primer_status.DIGIT;
+					if (
+						(event.key.keysym.sym == SDLK_p) &&
+						(primer_status.EN || primer_status.RU || primer_status.DIGIT || !primer_status.PUNCTUATION)
+						) primer_status.PUNCTUATION = !primer_status.PUNCTUATION;
+				}
+
 			}
 		}
 
@@ -121,6 +149,9 @@ int main(void) {
 		SDL_GetRendererOutputSize(renderer, &window_width, &window_height);
 
 		// Графика
+
+		int draw_y_pos = 0;
+		int draw_x_pos = 0;
 
 		if (scene == "Начальный экран") { // Начальный экран
 			draw_text_line(
@@ -152,7 +183,7 @@ int main(void) {
 			draw_text_line(
 				renderer,
 				font,
-				"2 - Изучение букв",
+				"2 - Изучение",
 				window_width / 2, window_height / 2 - font_size / 2 - line_spacing / 2,
 				255, 255, 255,
 				1, 1
@@ -160,11 +191,21 @@ int main(void) {
 			draw_text_line(
 				renderer,
 				font,
-				"3 - Повторение букв",
+				"3 - Повторение",
 				window_width / 2, window_height / 2 + font_size / 2 + line_spacing / 2,
 				255, 255, 255,
 				1, 1
 			);
+
+			draw_text_line(
+				renderer,
+				font,
+				"0 - Выбор букварей",
+				window_width / 2, window_height - 4 * line_spacing - font_size,
+				255, 255, 255,
+				1, 1
+			);
+
 			draw_text_line(
 				renderer,
 				font,
@@ -187,8 +228,8 @@ int main(void) {
 
 			// RU_primer
 
-			int draw_y_pos = line_spacing * 3 + font_size;
-			int draw_x_pos = line_spacing * 3;
+			draw_y_pos = line_spacing * 3 + font_size;
+			draw_x_pos = line_spacing * 3;
 
 			for (int i = 0; i < RU_primer_lenght; i++) {
 				draw_text_line(
@@ -242,25 +283,25 @@ int main(void) {
 			// DIGIT_primer
 
 			draw_y_pos = line_spacing * 3 + font_size;
-			draw_x_pos = window_width - line_spacing * 3 - 2 * font_size - 50;
+			draw_x_pos = window_width - line_spacing * 3;
 
 			for (int i = 0; i < DIGIT_primer_lenght; i++) {
 				draw_text_line(
 					renderer,
 					font,
 					DIGIT_primer[i].letter,
-					draw_x_pos, draw_y_pos - scroll_offset,
+					draw_x_pos - 50 - font_size, draw_y_pos - scroll_offset,
 					255, 255, 255,
-					0, 0
+					2, 0
 				);
 
 				draw_text_line(
 					renderer,
 					font,
 					DIGIT_primer[i].code,
-					draw_x_pos + 50, draw_y_pos - scroll_offset,
+					draw_x_pos, draw_y_pos - scroll_offset,
 					255, 255, 255,
-					0, 0
+					2, 0
 				);
 
 				draw_y_pos += line_spacing + font_size;
@@ -275,22 +316,202 @@ int main(void) {
 					renderer,
 					font,
 					PUNCTUATION_primer[i].letter,
-					draw_x_pos, draw_y_pos - scroll_offset,
+					draw_x_pos - 50 - font_size, draw_y_pos - scroll_offset,
 					255, 255, 255,
-					3, 0
+					2, 0
 				);
 
 				draw_text_line(
 					renderer,
 					font,
 					PUNCTUATION_primer[i].code,
-					draw_x_pos + 50, draw_y_pos - scroll_offset,
+					draw_x_pos, draw_y_pos - scroll_offset,
 					255, 255, 255,
-					3, 0
+					2, 0
 				);
 
 				draw_y_pos += line_spacing + font_size;
 			}
+		}
+		else if (scene == "Изучение") {
+
+		}
+
+		else if (scene == "Выбор букварей") {
+			
+			draw_text_line(
+				renderer,
+				font,
+				"Выбор букварей",
+				window_width / 2, line_spacing,
+				255, 255, 255,
+				1, 0
+			);
+
+			draw_text_line(
+				renderer,
+				font,
+				"E - Английски букварь",
+				window_width / 2, window_height / 2 - font_size * 3 / 2 - line_spacing * 3 / 2,
+				255, 255, 255,
+				1, 1
+			);
+			if (primer_status.EN) {
+				draw_checkmark(
+					renderer,
+					window_width / 4, window_height / 2 - font_size * 3 / 2 - line_spacing * 3 / 2,
+					font_size * 2 / 3, font_size / 10,
+					100, 255, 100,
+					1, 1
+				);
+				draw_checkmark(
+					renderer,
+					3 * window_width / 4, window_height / 2 - font_size * 3 / 2 - line_spacing * 3 / 2,
+					font_size * 2 / 3, font_size / 10,
+					100, 255, 100,
+					1, 1
+				);
+			}
+			else {
+				draw_cross(
+					renderer,
+					window_width / 4, window_height / 2 - font_size * 3 / 2 - line_spacing * 3 / 2,
+					font_size * 2 / 3, font_size / 10,
+					255, 100, 100,
+					1, 1
+				);
+				draw_cross(
+					renderer,
+					3 * window_width / 4, window_height / 2 - font_size * 3 / 2 - line_spacing * 3 / 2,
+					font_size * 2 / 3, font_size / 10,
+					255, 100, 100,
+					1, 1
+				);
+			}
+
+			draw_text_line(
+				renderer,
+				font,
+				"R - Русский букварь",
+				window_width / 2, window_height / 2 - font_size  / 2 - line_spacing / 2,
+				255, 255, 255,
+				1, 1
+			);
+			if (primer_status.RU) {
+				draw_checkmark(
+					renderer,
+					window_width / 4, window_height / 2 - font_size / 2 - line_spacing / 2,
+					font_size * 2 / 3, font_size / 10,
+					100, 255, 100,
+					1, 1
+				);
+				draw_checkmark(
+					renderer,
+					3 * window_width / 4, window_height / 2 - font_size / 2 - line_spacing / 2,
+					font_size * 2 / 3, font_size / 10,
+					100, 255, 100,
+					1, 1
+				);
+			}
+			else {
+				draw_cross(
+					renderer,
+					window_width / 4, window_height / 2 - font_size / 2 - line_spacing / 2,
+					font_size * 2 / 3, font_size / 10,
+					255, 100, 100,
+					1, 1
+				);
+				draw_cross(
+					renderer,
+					3 * window_width / 4, window_height / 2 - font_size / 2 - line_spacing / 2,
+					font_size * 2 / 3, font_size / 10,
+					255, 100, 100,
+					1, 1
+				);
+			}
+
+			draw_text_line(
+				renderer,
+				font,
+				"D - Цифровой букварь",
+				window_width / 2, window_height / 2 + font_size / 2 + line_spacing / 2,
+				255, 255, 255,
+				1, 1
+			);
+			if (primer_status.DIGIT) {
+				draw_checkmark(
+					renderer,
+					window_width / 4, window_height / 2 + font_size / 2 + line_spacing / 2,
+					font_size * 2 / 3, font_size / 10,
+					100, 255, 100,
+					1, 1
+				);
+				draw_checkmark(
+					renderer,
+					3 * window_width / 4, window_height / 2 + font_size / 2 + line_spacing / 2,
+					font_size * 2 / 3, font_size / 10,
+					100, 255, 100,
+					1, 1
+				);
+			}
+			else {
+				draw_cross(
+					renderer,
+					window_width / 4, window_height / 2 + font_size / 2 + line_spacing / 2,
+					font_size * 2 / 3, font_size / 10,
+					255, 100, 100,
+					1, 1
+				);
+				draw_cross(
+					renderer,
+					3 * window_width / 4, window_height / 2 + font_size / 2 + line_spacing / 2,
+					font_size * 2 / 3, font_size / 10,
+					255, 100, 100,
+					1, 1
+				);
+			}
+
+			draw_text_line(
+				renderer,
+				font,
+				"P - Пунктуационный букварь",
+				window_width / 2, window_height / 2 + font_size * 3 / 2 + line_spacing * 3 / 2,
+				255, 255, 255,
+				1, 1
+			);
+			if (primer_status.PUNCTUATION) {
+				draw_checkmark(
+					renderer,
+					window_width / 4, window_height / 2 + font_size * 3 / 2 + line_spacing * 3 / 2,
+					font_size * 2 / 3, font_size / 10,
+					100, 255, 100,
+					1, 1
+				);
+				draw_checkmark(
+					renderer,
+					3 * window_width / 4, window_height / 2 + font_size * 3 / 2 + line_spacing * 3 / 2,
+					font_size * 2 / 3, font_size / 10,
+					100, 255, 100,
+					1, 1
+				);
+			}
+			else {
+				draw_cross(
+					renderer,
+					window_width / 4, window_height / 2 + font_size * 3 / 2 + line_spacing * 3 / 2,
+					font_size * 2 / 3, font_size / 10,
+					255, 100, 100,
+					1, 1
+				);
+				draw_cross(
+					renderer,
+					3 * window_width / 4, window_height / 2 + font_size * 3 / 2 + line_spacing * 3 / 2,
+					font_size * 2 / 3, font_size / 10,
+					255, 100, 100,
+					1, 1
+				);
+			}
+
 		}
 
 		// Показать кадр
