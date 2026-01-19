@@ -137,7 +137,7 @@ int main(void) {
 				if ((scene == "Начальный экран") && 
 					((event.key.keysym.sym == SDLK_RETURN) || (event.key.keysym.sym == SDLK_KP_ENTER))) scene = "Выбор режима";
 
-				if (scene == "Выбор режима") {
+				else if (scene == "Выбор режима") {
 					if (event.key.keysym.sym == SDLK_ESCAPE) running = 0;
 
 					if ((event.key.keysym.sym == SDLK_1) || (event.key.keysym.sym == SDLK_KP_1)) {
@@ -160,16 +160,16 @@ int main(void) {
 					if ((event.key.keysym.sym == SDLK_0) || (event.key.keysym.sym == SDLK_KP_0)) scene = "Выбор букварей";
 				}
 
-				if ((scene == "Азбука Морзе") && (event.key.keysym.sym == SDLK_ESCAPE)) {
+				else if ((scene == "Азбука Морзе") && (event.key.keysym.sym == SDLK_ESCAPE)) {
 					scene = "Выбор режима";
 					scroll_offset = 0;
 					max_scroll_offset = 0;
 				}
-				if ((scene == "Изучение") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Результат тренировки";
+				else if ((scene == "Изучение") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Результат тренировки";
 
-				if ((scene == "Результат тренировки") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Выбор режима";
+				else if ((scene == "Результат тренировки") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Выбор режима";
 
-				if (scene == "Выбор букварей") {
+				else if (scene == "Выбор букварей") {
 					if (event.key.keysym.sym == SDLK_ESCAPE) scene = "Выбор режима";
 
 					if (
