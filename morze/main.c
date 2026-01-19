@@ -76,6 +76,12 @@ int main(void) {
 	int pair_to_learn_count = 3;
 	LettersPair pair_to_learn[3];
 
+	int mistakes_counter = 0;
+
+	char buffer_for_int_as_string[32 + 16];
+
+	int DOT_THRESHOLD = 250;
+
 	char input_code[17];
 	input_code[16] = '\0';
 	int input_index = 0;
@@ -146,6 +152,7 @@ int main(void) {
 						training_stage = 0;
 						for (int i = 0; i < pair_to_learn_count; i++) pair_to_learn[i] = get_random_pair();
 
+						mistakes_counter = 0;
 						input_index = 0;
 						for (int i = 0; i < input_code_lenght; i++) input_code[i] = '\0';
 					}
@@ -158,7 +165,9 @@ int main(void) {
 					scroll_offset = 0;
 					max_scroll_offset = 0;
 				}
-				if ((scene == "Изучение") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Выбор режима";
+				if ((scene == "Изучение") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Результат тренировки";
+
+				if ((scene == "Результат тренировки") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Выбор режима";
 
 				if (scene == "Выбор букварей") {
 					if (event.key.keysym.sym == SDLK_ESCAPE) scene = "Выбор режима";
@@ -417,18 +426,21 @@ int main(void) {
 
 		}
 		else if (scene == "Изучение") {
+
+			// Отрисовка основной информации
+
 			draw_text_line(
 				renderer,
 				giant_font,
-				pair_to_learn[training_stage].letter,
+				pair_to_learn[training_stage % pair_to_learn_count].letter,
 				window_width / 2, window_height / 2,
 				255, 255, 255,
 				1, 1
 			);
-			draw_text_line(
+			if (training_stage < pair_to_learn_count) draw_text_line(
 				renderer,
 				giant_font,
-				pair_to_learn[training_stage].code,
+				pair_to_learn[training_stage % pair_to_learn_count].code,
 				window_width / 2, window_height / 2 - giant_font_size,
 				255, 255, 255,
 				1, 1
@@ -443,19 +455,94 @@ int main(void) {
 				1, 1
 			);
 
+			// Логика проверки ответа
+
 			int code_is_correct = 1;
-			for (int i = 0; i < strlen(pair_to_learn[training_stage].code); i++) {
-				if (input_code[i] != pair_to_learn[training_stage].code[i]) {
+			int has_spell_mistake = 0;
+
+			for (int i = 0; i < strlen(pair_to_learn[training_stage % pair_to_learn_count].code); i++) {
+				if (input_code[i] != pair_to_learn[training_stage % pair_to_learn_count].code[i]) {
+					if (input_code[i] != '\0') has_spell_mistake = 1;
+
 					code_is_correct = 0;
 					break;
 				}
 			}
+			if(input_code[strlen(pair_to_learn[training_stage % pair_to_learn_count].code)] != '\0') has_spell_mistake = 0;
+
 			if (code_is_correct) {
 				input_index = 0;
 				for (int i = 0; i < input_code_lenght; i++) input_code[i] = '\0';
 				
 				training_stage++;
 			}
+			else if (has_spell_mistake) {
+				mistakes_counter++;
+
+				input_index = 0;
+				for (int i = 0; i < input_code_lenght; i++) input_code[i] = '\0';
+			}
+
+			// Логика завершения режима
+
+			if (training_stage == 2 * pair_to_learn_count) scene = "Результат тренировки";
+
+			// Отрисовка доп. информации
+
+			draw_x_pos = 3 * line_spacing;
+			draw_y_pos = 3 * line_spacing;
+
+			for (int i = 0; (i < training_stage) && (i < pair_to_learn_count); i++) {
+				draw_text_line(
+					renderer,
+					font,
+					pair_to_learn[i].letter,
+					draw_x_pos, draw_y_pos,
+					255, 255, 255,
+					0, 0
+				);
+				draw_y_pos += font_size + line_spacing;
+			}
+
+			draw_x_pos = 5 * line_spacing + font_size;
+			draw_y_pos = 3 * line_spacing;
+
+			for (int i = 0; i < training_stage - pair_to_learn_count; i++) {
+				draw_text_line(
+					renderer,
+					font,
+					pair_to_learn[i].code,
+					draw_x_pos, draw_y_pos,
+					255, 255, 255,
+					0, 0
+				);
+				draw_y_pos += font_size + line_spacing;
+			}
+
+			snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "Количество ошибок: %d", mistakes_counter);
+			draw_text_line(
+				renderer,
+				font,
+				buffer_for_int_as_string,
+				window_width - 3 * line_spacing, 3 * line_spacing,
+				255, 255, 255,
+				2, 0
+			);
+
+		}
+
+		else if (scene == "Результат тренировки") {
+
+			snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "Всего ошибок: %d", mistakes_counter);
+			draw_text_line(
+				renderer,
+				font,
+				buffer_for_int_as_string,
+				window_width / 2, window_height / 2,
+				255, 255, 255,
+				1, 1
+			);
+
 		}
 
 		else if (scene == "Выбор букварей") {

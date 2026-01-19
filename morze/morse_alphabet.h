@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#define DOT_THRESHOLD 150
-
 typedef struct {
     char* letter;
     char* code;
