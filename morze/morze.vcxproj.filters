@@ -24,12 +24,24 @@
     <ClCompile Include="GUI.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="scenes.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="training.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="morse_alphabet.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="scenes.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="training.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
