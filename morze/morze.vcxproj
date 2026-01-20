@@ -135,6 +135,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="audio.c" />
     <ClCompile Include="GUI.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="morse_alphabet.c" />
@@ -142,6 +143,7 @@
     <ClCompile Include="training.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="audio.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="morse_alphabet.h" />
     <ClInclude Include="scenes.h" />

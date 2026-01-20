@@ -308,6 +308,78 @@ char* draw_scene(
 		);
 
 	}
+	else if (scene == "Тренировка") {
+
+		// Отрисовка основной информации
+
+		LettersPair needed_pair = training_state->pair_to_learn[training_state->stage % training_state->pair_to_learn_count];
+
+		draw_text_line(
+			renderer,
+			giant_font,
+			needed_pair.letter,
+			window_width / 2, window_height / 2,
+			255, 255, 255,
+			1, 1
+		);
+
+		draw_text_line(
+			renderer,
+			giant_font,
+			training_state->input_code,
+			window_width / 2, window_height / 2 + giant_font_size,
+			50, 200, 200,
+			1, 1
+		);
+
+		// Логика проверки ответа
+
+		check_answer(training_state);
+
+		// Логика завершения режима
+
+		if (training_state->stage == training_state->pair_to_learn_count) scene = "Результат тренировки";
+
+		// Отрисовка доп. информации
+
+		draw_x_pos = 3 * line_spacing;
+		draw_y_pos = 3 * line_spacing;
+
+		for (int i = 0; i < training_state->stage; i++) {
+			draw_x_pos = 3 * line_spacing;
+			draw_text_line(
+				renderer,
+				font,
+				training_state->pair_to_learn[i].letter,
+				draw_x_pos, draw_y_pos,
+				255, 255, 255,
+				0, 0
+			);
+
+			draw_x_pos = 5 * line_spacing + font_size;
+			draw_text_line(
+				renderer,
+				font,
+				training_state->pair_to_learn[i].code,
+				draw_x_pos, draw_y_pos,
+				255, 255, 255,
+				0, 0
+			);
+
+			draw_y_pos += font_size + line_spacing;
+		}
+
+		snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "Количество ошибок: %d", training_state->mistakes);
+		draw_text_line(
+			renderer,
+			font,
+			buffer_for_int_as_string,
+			window_width - 3 * line_spacing, 3 * line_spacing,
+			255, 255, 255,
+			2, 0
+		);
+
+		}
 
 	else if (scene == "Результат тренировки") {
 

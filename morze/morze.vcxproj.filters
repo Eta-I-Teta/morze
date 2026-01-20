@@ -30,6 +30,9 @@
     <ClCompile Include="training.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="audio.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="morse_alphabet.h">
@@ -42,6 +45,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="training.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="audio.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

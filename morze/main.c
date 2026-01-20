@@ -13,6 +13,7 @@
 
 #include "GUI.h"
 #include "morse_alphabet.h"
+#include "audio.h"
 #include "scenes.h"
 #include "training.h"
 
@@ -22,10 +23,17 @@ int main(void) {
 	// Инициализация SDL2, SDL_ttf, time
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		printf("Выполнение программы невозможно: Библиотека SDL 2 не инициализирована");
+		printf("Выполнение программы невозможно: Библиотека SDL 2 (SDL_INIT_VIDEO) не инициализирована");
 		return 1;
 	}
-	TTF_Init();
+	if (SDL_Init(SDL_INIT_AUDIO) != 0) {
+		printf("Выполнение программы невозможно: Библиотека SDL 2 (SDL_INIT_AUDIO) не инициализирована");
+		return 1;
+	}
+	if (TTF_Init() != 0) {
+		printf("Выполнение программы невозможно: Библиотека SDL_ttf не инициализирована");
+		return 1;
+	}
 
 	srand((unsigned int)time(NULL));
 	
@@ -122,9 +130,17 @@ int main(void) {
 				
 				// Глобальные функции нажатия клавиш
 				
-				if ((event.key.keysym.sym == SDLK_SPACE) && (!is_space_held)) {
+				/*if ((event.key.keysym.sym == SDLK_SPACE) && (!is_space_held)) {
 					held_start = SDL_GetTicks();
 					is_space_held = 1;
+				}*/
+
+				if (event.key.keysym.sym == SDLK_SPACE) {
+					if (!is_space_held) {
+						held_start = SDL_GetTicks();
+						is_space_held = 1;
+					}
+					//play_beep(100, 800);
 				}
 
 				// Локальные функции нажатия клавиш
@@ -150,6 +166,15 @@ int main(void) {
 						clear_input(training_state);
 						update_pair_to_learn(training_state);
 					}
+					if ((event.key.keysym.sym == SDLK_3) || (event.key.keysym.sym == SDLK_KP_3)) {
+						scene = "Тренировка";
+
+						training_state->stage = 0;
+						training_state->mistakes = 0;
+
+						clear_input(training_state);
+						update_pair_to_learn(training_state);
+					}
 
 					if ((event.key.keysym.sym == SDLK_0) || (event.key.keysym.sym == SDLK_KP_0)) scene = "Выбор букварей";
 				}
@@ -160,6 +185,7 @@ int main(void) {
 					max_scroll_offset = 0;
 				}
 				else if ((scene == "Изучение") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Результат тренировки";
+				else if ((scene == "Тренировка") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Результат тренировки";
 
 				else if ((scene == "Результат тренировки") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Выбор режима";
 
