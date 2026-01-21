@@ -82,14 +82,9 @@ int main(void) {
 	int scroll_offset = 0;
 	int max_scroll_offset = 0;
 
-	TrainingState* training_state = malloc(sizeof(TrainingState));
-	if (training_state != NULL)init_training_state(training_state);
-	else {
-		printf("Выполнение программы невозможно: Ошибка выделения памяти (training_state)");
-		return 1;
-	}
-
+	TrainingState* training_state = create_training_state();
 	OtherSettings* other_settings = create_other_settings();
+	if ((other_settings == NULL) || (training_state == NULL)) return 1;
 
 	int is_space_held = 0;
 	int held_start;
@@ -136,7 +131,7 @@ int main(void) {
 						held_start = SDL_GetTicks();
 						is_space_held = 1;
 					}
-					//play_beep(100, 800);
+					if (!other_settings->is_mute) start_beep(other_settings->frequency);
 				}
 
 				// Локальные функции нажатия клавиш
@@ -211,7 +206,23 @@ int main(void) {
 				else if (scene == "Прочие настройки") {
 					if (event.key.keysym.sym == SDLK_ESCAPE) scene = "Выбор режима";
 
+					if (event.key.keysym.sym == SDLK_m) other_settings->is_mute = !other_settings->is_mute;
+
+					if (event.key.keysym.sym == SDLK_w) {
+						other_settings->DOT_THRESHOLD = min(other_settings->DOT_THRESHOLD + 50, 750);
+						if (!other_settings->is_mute) beep(other_settings->frequency, other_settings->DOT_THRESHOLD);
+					}
+					if (event.key.keysym.sym == SDLK_s) {
+						other_settings->DOT_THRESHOLD = max(other_settings->DOT_THRESHOLD - 50, 100);
+						if (!other_settings->is_mute) beep(other_settings->frequency, other_settings->DOT_THRESHOLD);
+					}
+
+					if (event.key.keysym.sym == SDLK_d) training_state->pair_to_learn_count = min(training_state->pair_to_learn_count + 1, 15);
+					if (event.key.keysym.sym == SDLK_a) training_state->pair_to_learn_count = max(training_state->pair_to_learn_count - 1, 1);
 					
+					if (event.key.keysym.sym == SDLK_e) other_settings->frequency = min(other_settings->frequency + 50, 2000);
+					if (event.key.keysym.sym == SDLK_q) other_settings->frequency = max(other_settings->frequency - 50, 400);
+
 				}
 
 			}
@@ -226,12 +237,13 @@ int main(void) {
 
 				if (held < other_settings->DOT_THRESHOLD) {
 					training_state->input_code[training_state->input_index] = '.';
-					training_state->input_index++;
-				}
+					training_state->input_index++;				}
 				else {
 					training_state->input_code[training_state->input_index] = '-';
 					training_state->input_index++;
 				}
+
+				stop_beep();
 			}
 
 		}

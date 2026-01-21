@@ -10,7 +10,7 @@ typedef struct {
 	int input_code_lenght;
 	int input_index;
 
-	LettersPair pair_to_learn[3];
+	LettersPair pair_to_learn[15];
 	int pair_to_learn_count;
 } TrainingState;
 
@@ -30,11 +30,11 @@ void clear_input(TrainingState* training_state);
 void update_pair_to_learn(TrainingState* training_state);
 
 /*
-Инициализирует состояние тренировки по умолчанию
+Создаёт и инициализирует новое состояние тренировки по азбуке Морзе
 
-@param training_state — указатель на структуру состояния тренировки
+@return Указатель на созданную структуру TrainingState, или NULL в случае нехватки памяти
 */
-void init_training_state(TrainingState* training_state);
+TrainingState* create_training_state();
 
 /*
 Проверяет правильность введённого пользователем кода Морзе.

@@ -26,7 +26,7 @@ char* draw_scene(
 
 ) {
 
-	char buffer_for_int_as_string[32 + 32];
+	char buffer_for_int_as_string[32 + 64];
 
 	int draw_y_pos = 0;
 	int draw_x_pos = 0;
@@ -53,7 +53,7 @@ char* draw_scene(
 		draw_text_line(
 			renderer,
 			font,
-			"1 - Азбука Морзе",
+			"[1] Азбука Морзе",
 			window_width / 2, window_height / 2 - font_size * 5 / 2 - line_spacing * 5 / 2,
 			255, 255, 255,
 			1, 1
@@ -61,7 +61,7 @@ char* draw_scene(
 		draw_text_line(
 			renderer,
 			font,
-			"2 - Изучение",
+			"[2] Изучение",
 			window_width / 2, window_height / 2 - font_size * 3 / 2 - line_spacing * 3 / 2,
 			255, 255, 255,
 			1, 1
@@ -69,7 +69,7 @@ char* draw_scene(
 		draw_text_line(
 			renderer,
 			font,
-			"3 - Повторение",
+			"[3] Повторение",
 			window_width / 2, window_height / 2 - font_size / 2 - line_spacing / 2,
 			255, 255, 255,
 			1, 1
@@ -85,7 +85,7 @@ char* draw_scene(
 		draw_text_line(
 			renderer,
 			font,
-			"9 - Выбор букварей",
+			"[9] Выбор букварей",
 			window_width / 2, window_height / 2 + font_size * 3 / 2 + line_spacing * 3 / 2,
 			255, 255, 255,
 			1, 1
@@ -93,7 +93,7 @@ char* draw_scene(
 		draw_text_line(
 			renderer,
 			font,
-			"0 - Прочие настройки",
+			"[0] Прочие настройки",
 			window_width / 2, window_height / 2 + font_size * 5 / 2 + line_spacing * 5 / 2,
 			255, 255, 255,
 			1, 1
@@ -240,13 +240,13 @@ char* draw_scene(
 
 		SDL_RenderDrawLine(
 			renderer,
-			window_width / 3, font_size,
-			window_width / 3, window_height - font_size
+			window_width / 3, font_size * 3 / 2,
+			window_width / 3, window_height - font_size * 3 / 2
 		);
 		SDL_RenderDrawLine(
 			renderer,
-			window_width * 2 / 3, font_size,
-			window_width * 2 / 3, window_height - font_size
+			window_width * 2 / 3, font_size * 3 / 2,
+			window_width * 2 / 3, window_height - font_size * 3 / 2
 		);
 
 	}
@@ -595,11 +595,32 @@ char* draw_scene(
 			);
 		}
 
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderDrawLine(
+			renderer,
+			window_width / 4, window_height / 2 - (font_size + line_spacing) * 5 / 2,
+			window_width * 3 / 4, window_height / 2 - (font_size + line_spacing) * 5 / 2
+		);
+		SDL_RenderDrawLine(
+			renderer,
+			window_width / 4, window_height / 2 + (font_size + line_spacing) * 5 / 2,
+			window_width * 3 / 4, window_height / 2 + (font_size + line_spacing) * 5 / 2
+		);
+
 	}
 	else if (scene == "Прочие настройки") {
 
+		draw_text_line(
+			renderer,
+			font,
+			"Прочие настройки",
+			window_width / 2, line_spacing,
+			255, 255, 255,
+			1, 0
+		);
+
 		snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), 
-				 "Пороговое значение для тире: %d мс", other_settings->DOT_THRESHOLD);
+				 "[W/S] Пороговое значение для тире: %d мс", other_settings->DOT_THRESHOLD);
 		draw_text_line(
 			renderer,
 			font,
@@ -610,7 +631,7 @@ char* draw_scene(
 		);
 
 		snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), 
-				 "Кол-во символов в тренировке: %d", training_state->pair_to_learn_count);
+				 "[A/D] Кол-во символов в тренировке: %d", training_state->pair_to_learn_count);
 		draw_text_line(
 			renderer,
 			font,
@@ -620,8 +641,8 @@ char* draw_scene(
 			1, 1
 		);
 
-		if(other_settings->is_mute) snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "Звук: ВЫКЛ");
-		else snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "Звук: ВКЛ");
+		if(other_settings->is_mute) snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "[M] Звук: ВЫКЛ");
+		else snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "[M] Звук: ВКЛ");
 		draw_text_line(
 			renderer,
 			font,
@@ -629,6 +650,29 @@ char* draw_scene(
 			window_width / 2, window_height / 2 + (font_size + line_spacing) * 2,
 			255, 255, 255,
 			1, 1
+		);
+
+		snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string),
+			"[E/Q] Тональность сигнала: %d Гц", other_settings->frequency);
+		draw_text_line(
+			renderer,
+			font,
+			buffer_for_int_as_string,
+			window_width / 2, window_height / 2 + (font_size + line_spacing) * 3,
+			255, 255, 255,
+			1, 1
+		);
+
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderDrawLine(
+			renderer,
+			window_width / 4, font_size * 3 / 2,
+			window_width * 3 / 4, font_size * 3 / 2
+		);
+		SDL_RenderDrawLine(
+			renderer,
+			window_width / 4, window_height - font_size * 3 / 2,
+			window_width * 3 / 4, window_height - font_size * 3 / 2
 		);
 
 	}

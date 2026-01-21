@@ -9,6 +9,7 @@ OtherSettings* create_other_settings() {
 	else {
 		other_settings->DOT_THRESHOLD = 250;
 		other_settings->is_mute = 0;
+		other_settings->frequency = 800;
 	}
 
 	return other_settings;

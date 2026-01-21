@@ -1,4 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
 #include "training.h"
 
 void clear_input(TrainingState* training_state) {
@@ -11,17 +14,25 @@ void update_pair_to_learn(TrainingState* training_state) {
 	for (int i = 0; i < training_state->pair_to_learn_count; i++) training_state->pair_to_learn[i] = get_random_pair();
 }
 
-void init_training_state(TrainingState* training_state) {
-	training_state->input_code_lenght = sizeof(training_state->input_code) / sizeof(training_state->input_code[0]) - 1;
-	training_state->input_index = 0;
+TrainingState* create_training_state() {
+	TrainingState* training_state = malloc(sizeof(TrainingState));
 
-	clear_input(training_state);
-	training_state->input_code[training_state->input_code_lenght] = '\0';
+	if (training_state == NULL) printf("Выполнение программы невозможно: Ошибка выделения памяти (training_state)");
+	else {
+		training_state->input_code_lenght = sizeof(training_state->input_code) / sizeof(training_state->input_code[0]) - 1;
+		training_state->input_index = 0;
 
-	training_state->mistakes = 0;
-	training_state->stage = 0;
+		clear_input(training_state);
+		training_state->input_code[training_state->input_code_lenght] = '\0';
 
-	training_state->pair_to_learn_count = 3;
+		training_state->mistakes = 0;
+		training_state->stage = 0;
+
+		training_state->pair_to_learn_count = 3;
+	}
+
+	return training_state;
+
 }
 
 int check_answer(TrainingState* training_state) {
