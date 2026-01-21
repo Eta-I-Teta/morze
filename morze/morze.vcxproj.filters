@@ -36,6 +36,9 @@
     <ClCompile Include="other_settings.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="save_and_load.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="morse_alphabet.h">
@@ -56,5 +59,12 @@
     <ClInclude Include="other_settings.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="save_and_load.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\other_settings.cfg" />
+    <None Include="config\primer_status.cfg" />
   </ItemGroup>
 </Project>

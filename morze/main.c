@@ -17,6 +17,7 @@
 #include "scenes.h"
 #include "training.h"
 #include "other_settings.h"
+#include "save_and_load.h"
 
 int main(void) {
 	char* locale = setlocale(LC_ALL, "");
@@ -70,7 +71,7 @@ int main(void) {
 
 	const int giant_font_size = 120;
 	TTF_Font* giant_font = TTF_OpenFont("fonts/0_MilligramVariable-Roman.ttf", giant_font_size);
-	if (!font) {
+	if (!giant_font) {
 		printf("Выполнение программы невозможно: Ошибка загрузки шрифта (giant_font)");
 		return 1;
 	}
@@ -85,6 +86,8 @@ int main(void) {
 	TrainingState* training_state = create_training_state();
 	OtherSettings* other_settings = create_other_settings();
 	if ((other_settings == NULL) || (training_state == NULL)) return 1;
+
+	// load_other_settings(other_settings, training_state);
 
 	int is_space_held = 0;
 	int held_start;
@@ -202,6 +205,10 @@ int main(void) {
 						(event.key.keysym.sym == SDLK_p) &&
 						(primer_status.EN || primer_status.RU || primer_status.DIGIT || !primer_status.PUNCTUATION)
 						) primer_status.PUNCTUATION = !primer_status.PUNCTUATION;
+
+					if ((event.key.keysym.sym == SDLK_RETURN) || (event.key.keysym.sym == SDLK_KP_ENTER))
+						save_primer_status(&primer_status);
+
 				}
 				else if (scene == "Прочие настройки") {
 					if (event.key.keysym.sym == SDLK_ESCAPE) scene = "Выбор режима";
@@ -217,11 +224,18 @@ int main(void) {
 						if (!other_settings->is_mute) beep(other_settings->frequency, other_settings->DOT_THRESHOLD);
 					}
 
-					if (event.key.keysym.sym == SDLK_d) training_state->pair_to_learn_count = min(training_state->pair_to_learn_count + 1, 15);
-					if (event.key.keysym.sym == SDLK_a) training_state->pair_to_learn_count = max(training_state->pair_to_learn_count - 1, 1);
+					if (event.key.keysym.sym == SDLK_d) 
+						training_state->pair_to_learn_count = min(training_state->pair_to_learn_count + 1, 15);
+					if (event.key.keysym.sym == SDLK_a) 
+						training_state->pair_to_learn_count = max(training_state->pair_to_learn_count - 1, 1);
 					
-					if (event.key.keysym.sym == SDLK_e) other_settings->frequency = min(other_settings->frequency + 50, 2000);
-					if (event.key.keysym.sym == SDLK_q) other_settings->frequency = max(other_settings->frequency - 50, 400);
+					if (event.key.keysym.sym == SDLK_e) 
+						other_settings->frequency = min(other_settings->frequency + 50, 2000);
+					if (event.key.keysym.sym == SDLK_q) 
+						other_settings->frequency = max(other_settings->frequency - 50, 400);
+
+					if ((event.key.keysym.sym == SDLK_RETURN) || (event.key.keysym.sym == SDLK_KP_ENTER)) 
+						save_other_settings(other_settings, training_state);
 
 				}
 

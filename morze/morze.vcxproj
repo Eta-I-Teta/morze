@@ -140,6 +140,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="morse_alphabet.c" />
     <ClCompile Include="other_settings.c" />
+    <ClCompile Include="save_and_load.c" />
     <ClCompile Include="scenes.c" />
     <ClCompile Include="training.c" />
   </ItemGroup>
@@ -148,8 +149,13 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="morse_alphabet.h" />
     <ClInclude Include="other_settings.h" />
+    <ClInclude Include="save_and_load.h" />
     <ClInclude Include="scenes.h" />
     <ClInclude Include="training.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config\other_settings.cfg" />
+    <None Include="config\primer_status.cfg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

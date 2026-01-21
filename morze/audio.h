@@ -12,5 +12,10 @@ void start_beep(const int frequency);
 */
 void stop_beep();
 
+/*
+Воспроизводит однократный тональный сигнал заданной частоты и длительности
 
+@param frequency — частота звукового сигнала в герцах (рекомендуемый диапазон: 600–1200 Гц)
+@param duration — длительность звука в миллисекундах
+*/
 void beep(const int frequency, const int duration);
