@@ -4,6 +4,7 @@
 #include <SDL_ttf.h>
 
 #include "training.h"
+#include "other_settings.h"
 
 /*
 Отрисовывает текущую сцену интерфейса тренажёра Морзе в зависимости от переданных аттрибутов
@@ -34,6 +35,8 @@ char* draw_scene(
 	int window_width, int window_height,
 	int scroll_offset,
 
-	TrainingState* training_state
+	TrainingState* training_state,
+
+	OtherSettings* other_settings
 
 );

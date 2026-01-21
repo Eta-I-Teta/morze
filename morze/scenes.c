@@ -20,11 +20,13 @@ char* draw_scene(
 	int window_width, int window_height,
 	int scroll_offset,
 
-	TrainingState* training_state
+	TrainingState* training_state,
+
+	OtherSettings* other_settings
 
 ) {
 
-	char buffer_for_int_as_string[32 + 16];
+	char buffer_for_int_as_string[32 + 32];
 
 	int draw_y_pos = 0;
 	int draw_x_pos = 0;
@@ -47,12 +49,12 @@ char* draw_scene(
 			1, 1
 		);
 	}
-	else if (scene == "Выбор режима") { // Выбор режима
+	else if (scene == "Выбор режима") {
 		draw_text_line(
 			renderer,
 			font,
 			"1 - Азбука Морзе",
-			window_width / 2, window_height / 2 - font_size * 3 / 2 - line_spacing / 2,
+			window_width / 2, window_height / 2 - font_size * 5 / 2 - line_spacing * 5 / 2,
 			255, 255, 255,
 			1, 1
 		);
@@ -60,7 +62,7 @@ char* draw_scene(
 			renderer,
 			font,
 			"2 - Изучение",
-			window_width / 2, window_height / 2 - font_size / 2 - line_spacing / 2,
+			window_width / 2, window_height / 2 - font_size * 3 / 2 - line_spacing * 3 / 2,
 			255, 255, 255,
 			1, 1
 		);
@@ -68,16 +70,31 @@ char* draw_scene(
 			renderer,
 			font,
 			"3 - Повторение",
-			window_width / 2, window_height / 2 + font_size / 2 + line_spacing / 2,
+			window_width / 2, window_height / 2 - font_size / 2 - line_spacing / 2,
 			255, 255, 255,
 			1, 1
+		);
+
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderDrawLine(
+			renderer,
+			window_width / 4, window_height / 2 + font_size / 2 + line_spacing / 2,
+			window_width * 3 / 4, window_height / 2 + font_size / 2 + line_spacing / 2
 		);
 
 		draw_text_line(
 			renderer,
 			font,
-			"0 - Выбор букварей",
-			window_width / 2, window_height - 4 * line_spacing - font_size,
+			"9 - Выбор букварей",
+			window_width / 2, window_height / 2 + font_size * 3 / 2 + line_spacing * 3 / 2,
+			255, 255, 255,
+			1, 1
+		);
+		draw_text_line(
+			renderer,
+			font,
+			"0 - Прочие настройки",
+			window_width / 2, window_height / 2 + font_size * 5 / 2 + line_spacing * 5 / 2,
 			255, 255, 255,
 			1, 1
 		);
@@ -86,9 +103,17 @@ char* draw_scene(
 			renderer,
 			font,
 			"Нажмите цифру, соответствующую номеру режима",
-			line_spacing, window_height - line_spacing,
+			window_width / 2, window_height - line_spacing * 4 - font_size,
 			100, 100, 100,
-			0, 2
+			1, 1
+		);
+		draw_text_line(
+			renderer,
+			font,
+			"ESC - выйти",
+			window_width / 2, window_height - line_spacing * 3,
+			100, 100, 100,
+			1, 1
 		);
 	}
 
@@ -215,13 +240,13 @@ char* draw_scene(
 
 		SDL_RenderDrawLine(
 			renderer,
-			window_width / 3, 0,
-			window_width / 3, window_height
+			window_width / 3, font_size,
+			window_width / 3, window_height - font_size
 		);
 		SDL_RenderDrawLine(
 			renderer,
-			window_width * 2 / 3, 0,
-			window_width * 2 / 3, window_height
+			window_width * 2 / 3, font_size,
+			window_width * 2 / 3, window_height - font_size
 		);
 
 	}
@@ -253,7 +278,7 @@ char* draw_scene(
 			giant_font,
 			training_state->input_code,
 			window_width / 2, window_height / 2 + giant_font_size,
-			50, 200, 200,
+			150, 250, 150,
 			1, 1
 		);
 
@@ -328,7 +353,7 @@ char* draw_scene(
 			giant_font,
 			training_state->input_code,
 			window_width / 2, window_height / 2 + giant_font_size,
-			50, 200, 200,
+			150, 150, 250,
 			1, 1
 		);
 
@@ -569,6 +594,42 @@ char* draw_scene(
 				1, 1
 			);
 		}
+
+	}
+	else if (scene == "Прочие настройки") {
+
+		snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), 
+				 "Пороговое значение для тире: %d мс", other_settings->DOT_THRESHOLD);
+		draw_text_line(
+			renderer,
+			font,
+			buffer_for_int_as_string,
+			window_width / 2, window_height / 2,
+			255, 255, 255,
+			1, 1
+		);
+
+		snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), 
+				 "Кол-во символов в тренировке: %d", training_state->pair_to_learn_count);
+		draw_text_line(
+			renderer,
+			font,
+			buffer_for_int_as_string,
+			window_width / 2, window_height / 2 + (font_size + line_spacing),
+			255, 255, 255,
+			1, 1
+		);
+
+		if(other_settings->is_mute) snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "Звук: ВЫКЛ");
+		else snprintf(buffer_for_int_as_string, sizeof(buffer_for_int_as_string), "Звук: ВКЛ");
+		draw_text_line(
+			renderer,
+			font,
+			buffer_for_int_as_string,
+			window_width / 2, window_height / 2 + (font_size + line_spacing) * 2,
+			255, 255, 255,
+			1, 1
+		);
 
 	}
 

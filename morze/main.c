@@ -16,6 +16,7 @@
 #include "audio.h"
 #include "scenes.h"
 #include "training.h"
+#include "other_settings.h"
 
 int main(void) {
 	char* locale = setlocale(LC_ALL, "");
@@ -88,7 +89,7 @@ int main(void) {
 		return 1;
 	}
 
-	int DOT_THRESHOLD = 250;
+	OtherSettings* other_settings = create_other_settings();
 
 	int is_space_held = 0;
 	int held_start;
@@ -129,11 +130,6 @@ int main(void) {
 			if (event.type == SDL_KEYDOWN) {
 				
 				// Глобальные функции нажатия клавиш
-				
-				/*if ((event.key.keysym.sym == SDLK_SPACE) && (!is_space_held)) {
-					held_start = SDL_GetTicks();
-					is_space_held = 1;
-				}*/
 
 				if (event.key.keysym.sym == SDLK_SPACE) {
 					if (!is_space_held) {
@@ -145,7 +141,7 @@ int main(void) {
 
 				// Локальные функции нажатия клавиш
 
-				if ((scene == "Начальный экран") && 
+				if ((scene == "Начальный экран") &&
 					((event.key.keysym.sym == SDLK_RETURN) || (event.key.keysym.sym == SDLK_KP_ENTER))) scene = "Выбор режима";
 
 				else if (scene == "Выбор режима") {
@@ -176,7 +172,8 @@ int main(void) {
 						update_pair_to_learn(training_state);
 					}
 
-					if ((event.key.keysym.sym == SDLK_0) || (event.key.keysym.sym == SDLK_KP_0)) scene = "Выбор букварей";
+					if ((event.key.keysym.sym == SDLK_9) || (event.key.keysym.sym == SDLK_KP_9)) scene = "Выбор букварей";
+					if ((event.key.keysym.sym == SDLK_0) || (event.key.keysym.sym == SDLK_KP_0)) scene = "Прочие настройки";
 				}
 
 				else if ((scene == "Азбука Морзе") && (event.key.keysym.sym == SDLK_ESCAPE)) {
@@ -187,7 +184,9 @@ int main(void) {
 				else if ((scene == "Изучение") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Результат тренировки";
 				else if ((scene == "Тренировка") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Результат тренировки";
 
-				else if ((scene == "Результат тренировки") && (event.key.keysym.sym == SDLK_ESCAPE)) scene = "Выбор режима";
+				else if ((scene == "Результат тренировки") &&
+					     ((event.key.keysym.sym == SDLK_ESCAPE) || (event.key.keysym.sym == SDLK_RETURN) || 
+						 (event.key.keysym.sym == SDLK_KP_ENTER))) scene = "Выбор режима";
 
 				else if (scene == "Выбор букварей") {
 					if (event.key.keysym.sym == SDLK_ESCAPE) scene = "Выбор режима";
@@ -209,6 +208,11 @@ int main(void) {
 						(primer_status.EN || primer_status.RU || primer_status.DIGIT || !primer_status.PUNCTUATION)
 						) primer_status.PUNCTUATION = !primer_status.PUNCTUATION;
 				}
+				else if (scene == "Прочие настройки") {
+					if (event.key.keysym.sym == SDLK_ESCAPE) scene = "Выбор режима";
+
+					
+				}
 
 			}
 
@@ -220,7 +224,7 @@ int main(void) {
 
 				if (training_state->input_index >= training_state->input_code_lenght) clear_input(training_state);
 
-				if (held < DOT_THRESHOLD) {
+				if (held < other_settings->DOT_THRESHOLD) {
 					training_state->input_code[training_state->input_index] = '.';
 					training_state->input_index++;
 				}
@@ -255,7 +259,9 @@ int main(void) {
 			window_width, window_height,
 			scroll_offset,
 
-			training_state
+			training_state,
+
+			other_settings
 
 		);
 

@@ -139,6 +139,7 @@
     <ClCompile Include="GUI.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="morse_alphabet.c" />
+    <ClCompile Include="other_settings.c" />
     <ClCompile Include="scenes.c" />
     <ClCompile Include="training.c" />
   </ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="audio.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="morse_alphabet.h" />
+    <ClInclude Include="other_settings.h" />
     <ClInclude Include="scenes.h" />
     <ClInclude Include="training.h" />
   </ItemGroup>
