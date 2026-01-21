@@ -58,6 +58,15 @@ int main(void) {
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
 	);
 
+	// Установка иконки окна
+
+	SDL_Surface* icon = SDL_LoadBMP("images/icon.bmp");
+	if (icon) {
+		SDL_SetWindowIcon(window, icon);
+		SDL_FreeSurface(icon);
+	}
+	else printf("Ошибка загрузки иконки приложения\n");
+
 	// Шрифт
 
 	const int line_spacing = 5;
