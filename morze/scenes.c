@@ -43,7 +43,7 @@ char* draw_scene(
 		draw_text_line(
 			renderer,
 			font,
-			"Нажмите Enter чтобы продолжить",
+			"Нажмите [Enter] чтобы продолжить",
 			window_width / 2, window_height / 2 + font_size / 2 + line_spacing / 2,
 			100, 100, 100,
 			1, 1
@@ -105,15 +105,15 @@ char* draw_scene(
 			"Нажмите цифру, соответствующую номеру режима",
 			window_width / 2, window_height - line_spacing * 4 - font_size,
 			100, 100, 100,
-			1, 1
+			1, 2
 		);
 		draw_text_line(
 			renderer,
 			font,
-			"ESC - выйти",
+			"[ESC] выйти",
 			window_width / 2, window_height - line_spacing * 3,
 			100, 100, 100,
-			1, 1
+			1, 2
 		);
 	}
 
@@ -607,6 +607,15 @@ char* draw_scene(
 			window_width * 3 / 4, window_height / 2 + (font_size + line_spacing) * 5 / 2
 		);
 
+		draw_text_line(
+			renderer,
+			font,
+			"[ENTER] запомнить текущие настройки",
+			window_width / 2, window_height - line_spacing * 3,
+			100, 100, 100,
+			1, 2
+		);
+
 	}
 	else if (scene == "Прочие настройки") {
 
@@ -625,7 +634,7 @@ char* draw_scene(
 			renderer,
 			font,
 			buffer_for_int_as_string,
-			window_width / 2, window_height / 2,
+			window_width / 2, window_height / 2 - (font_size + line_spacing) * 3 / 2,
 			255, 255, 255,
 			1, 1
 		);
@@ -636,7 +645,7 @@ char* draw_scene(
 			renderer,
 			font,
 			buffer_for_int_as_string,
-			window_width / 2, window_height / 2 + (font_size + line_spacing),
+			window_width / 2, window_height / 2 - (font_size + line_spacing) / 2,
 			255, 255, 255,
 			1, 1
 		);
@@ -647,7 +656,7 @@ char* draw_scene(
 			renderer,
 			font,
 			buffer_for_int_as_string,
-			window_width / 2, window_height / 2 + (font_size + line_spacing) * 2,
+			window_width / 2, window_height / 2 + (font_size + line_spacing) / 2,
 			255, 255, 255,
 			1, 1
 		);
@@ -658,7 +667,7 @@ char* draw_scene(
 			renderer,
 			font,
 			buffer_for_int_as_string,
-			window_width / 2, window_height / 2 + (font_size + line_spacing) * 3,
+			window_width / 2, window_height / 2 + (font_size + line_spacing) * 3 / 2,
 			255, 255, 255,
 			1, 1
 		);
@@ -666,13 +675,30 @@ char* draw_scene(
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderDrawLine(
 			renderer,
-			window_width / 4, font_size * 3 / 2,
-			window_width * 3 / 4, font_size * 3 / 2
+			window_width / 4, window_height / 2 - (font_size + line_spacing) * 5 / 2,
+			window_width * 3 / 4, window_height / 2 - (font_size + line_spacing) * 5 / 2
 		);
 		SDL_RenderDrawLine(
 			renderer,
-			window_width / 4, window_height - font_size * 3 / 2,
-			window_width * 3 / 4, window_height - font_size * 3 / 2
+			window_width / 4, window_height / 2 + (font_size + line_spacing) * 5 / 2,
+			window_width * 3 / 4, window_height / 2 + (font_size + line_spacing) * 5 / 2
+		);
+
+		draw_text_line(
+			renderer,
+			font,
+			"[ENTER] запомнить текущие настройки",
+			window_width / 2, window_height - line_spacing * 3,
+			100, 100, 100,
+			1, 2
+		);
+		draw_text_line(
+			renderer,
+			font,
+			"[BACKSPACE] вернуться к настройкам по умолчанию",
+			window_width / 2, window_height - line_spacing * 4 - font_size,
+			100, 100, 100,
+			1, 2
 		);
 
 	}

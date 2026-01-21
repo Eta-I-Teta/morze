@@ -87,7 +87,8 @@ int main(void) {
 	OtherSettings* other_settings = create_other_settings();
 	if ((other_settings == NULL) || (training_state == NULL)) return 1;
 
-	// load_other_settings(other_settings, training_state);
+	load_other_settings(other_settings, training_state);
+	load_primer_status(&primer_status);
 
 	int is_space_held = 0;
 	int held_start;
@@ -236,6 +237,7 @@ int main(void) {
 
 					if ((event.key.keysym.sym == SDLK_RETURN) || (event.key.keysym.sym == SDLK_KP_ENTER)) 
 						save_other_settings(other_settings, training_state);
+					if (event.key.keysym.sym == SDLK_BACKSPACE) reset_other_settings(other_settings, training_state);
 
 				}
 
