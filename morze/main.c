@@ -262,7 +262,9 @@ int main(void) {
 
 				if (held < other_settings->DOT_THRESHOLD) {
 					training_state->input_code[training_state->input_index] = '.';
-					training_state->input_index++;				}
+					training_state->input_index++;				
+					SDL_Delay(75);
+				}
 				else {
 					training_state->input_code[training_state->input_index] = '-';
 					training_state->input_index++;
